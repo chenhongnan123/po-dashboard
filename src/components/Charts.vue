@@ -1,9 +1,6 @@
 <template>
   <div class="charts">
-    <div v-if="chartsData && chartsData.type" :id='"myChart"+chartsData.type' :style="{width: '100%', height: '80%'}" ></div>
-    <!-- <div id='myChart2' :style="{width: '100%', height: '80%'}" ></div> -->
-    <!-- <div id='myChart3' :style="{width: '100%', height: '80%'}" ></div>
-    <div id='myChart4' :style="{width: '100%', height: '80%'}" ></div> -->
+    <div v-if="chartsData && chartsData.type" :id='"myChart"+chartsData.type' :style="{width: '100%', height: '100%'}" ></div>
   </div>
 </template>
 
@@ -27,20 +24,24 @@ export default {
   watch:{
     chartsData:{
       handler(newVal,oldVal){
-        this.drawLine(newVal);
+        if(document.getElementById('myChart'+newVal.type))
+          this.drawLine(newVal);
       },
       deep:true
     }
     
   },
   methods:{
-    handleSelect(){
-      this.drawLine();
-    },
     drawLine(data){
       // _this.$echarts.init(document.getElementById('myChart')).dispose();
       this.myChart = this.$echarts.init(document.getElementById('myChart'+data.type))
       this.myChart.setOption({
+          grid: {
+            width:'80%',
+            height:'70%',
+            left:'5%',
+            top:data.gridTop||58,
+          },
           title: {
               text: data.title,
               // subtext: '纯属虚构'
@@ -48,7 +49,7 @@ export default {
                 color:"#fff",
               },
               left:"center",
-              top:0
+              top:10
           },
           tooltip: {
               trigger: 'axis',
@@ -64,8 +65,11 @@ export default {
               textStyle:{
                 color:'#fff'
               },
-              top:30,
+              top:"center",
+              left:'86%',
               show:!data.isHiddenLegend,
+              orient:'vertical',
+              align:'left',
           },
           dataZoom: {
               show: false,
@@ -86,7 +90,9 @@ export default {
                 },
                 axisLabel:{
                   color:'#fff'
-                }
+                },
+                max: data.lMax,
+                min: data.lMin,
               },
               {
                 name:data.yrName,
@@ -102,8 +108,8 @@ export default {
                 axisLabel:{
                   color:'#fff'
                 },
-                // max: 10,
-                // min: 0,
+                max: data.rMax,
+                min: data.rMin,
               }
           ],
           series:data.dataList

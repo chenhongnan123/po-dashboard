@@ -2,8 +2,19 @@
   <div class="home">
     <header>
       <img src="../assets/shopworx.png"/>
-      <span>po-dashboard</span>
-      <img src="../assets/customerLogo.png"/>
+      <h2>Finishing Center Process Parameter</h2>
+      <!-- <img src="../assets/customerLogo.png"/> -->
+      <span>
+        <el-select v-model="duringTime" placeholder="显示范围" @change="handleDuringTime">
+          <el-option
+            v-for="item in duringTimeOptions"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
+        <span class="time-going nowrap-one">{{dateTime}}</span>
+      </span>
     </header>
     
     <el-carousel height="100%" :autoplay="false" arrow="always">
@@ -15,16 +26,21 @@
           <div>
               <Charts :chartsData='chartsData2'/>
           </div>
+          <div>
+              <Charts :chartsData='chartsData5'/>
+          </div>
         </div>
       </el-carousel-item>
       <el-carousel-item>
         <div class="item-container">
           <div>
-              <!-- <div id="myChart1" :style="{width: '100%', height: '80%'}"></div> -->
               <Charts :chartsData='chartsData3'/>
           </div>
           <div>
               <Charts :chartsData='chartsData4'/>
+          </div>
+          <div>
+              <Charts :chartsData='chartsData6'/>
           </div>
         </div>
       </el-carousel-item>
@@ -44,22 +60,37 @@ export default {
   name: 'Home',
   data(){
     return {
+      dateTime:null,
+      duringTime:null,
+      duringTimeOptions:[
+        {name:10,id:10},
+        {name:30,id:30},
+        {name:60,id:60},
+        {name:120,id:120},
+        {name:240,id:240},
+      ],
       chartsData1:{
         dataList:[],
         xAxis:[],
         type:null,
         title:"",
         isHiddenLegend:true,
-        title:"OP201 压力Pressure",
-        ylName:"压力(TBD)",
+        title:"OP201 压力 Pressure",
+        ylName:"压力(Bar)",
+        lMax:10,
+        lMin:0,
       },
       chartsData2:{
         dataList:[],
         xAxis:[],
         type:null,
-        title:"OP201 温度Temperature-电流Current-PID",
+        title:"OP201 温度 Temperature - 电流 Current-PID",
         ylName:"温度(℃)",
         yrName:"电流(A)",
+        lMax:500,
+        lMin:0,
+        rMax:5,
+        rMin:0,
       },
       chartsData3:{
         dataList:[],
@@ -67,44 +98,98 @@ export default {
         type:null,
         title:"",
         isHiddenLegend:true,
-        title:"OP203 压力Pressure",
-        ylName:"压力(TBD)",
+        title:"OP203 压力 Pressure",
+        ylName:"压力(Bar)",
+        lMax:10,
+        lMin:0,
       },
       chartsData4:{
         dataList:[],
         xAxis:[],
         type:null,
-        title:"OP203 温度Temperature-电流Current-PID",
+        title:"OP203 温度 Temperature - 电流 Current-PID",
         ylName:"温度(℃)",
         yrName:"电流(A)",
-      }
-    }
-  },
-  async mounted(){
-    this.initSocket();
-  },
-  components:{
-    Charts
-  },
-  methods:{
-    init(){
-      this.data1 = {
+        lMax:500,
+        lMin:0,
+        rMax:5,
+        rMin:0,
+      },
+      chartsData5:{
+        dataList:[],
+        xAxis:[],
+        type:null,
+        title:"",
+        lMax:100,
+        lMin:0,
+        gridTop:10
+      },
+      chartsData6:{
+        dataList:[],
+        xAxis:[],
+        type:null,
+        title:"",
+        lMax:100,
+        lMin:0,
+        gridTop:10
+      },
+      data1:{
         xData:[],
-        yData:[{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]}]
-      };
-      this.data2 = {
+        xStoreData:[],
+        yData:[
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]}
+        ]
+      },
+      data2:{
         xData:[],
-        yData:[{data:[]},{data:[]},{data:[]},{data:[]}]
-      };
-      this.data3 = {
+        xStoreData:[],
+        yData:[{data:[],storeData:[]},{data:[],storeData:[]},{data:[],storeData:[]}]
+      },
+      data3:{
         xData:[],
-        yData:[{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]}]
-      };
-      this.data4 = {
+        xStoreData:[],
+        yData:[
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]}
+        ]
+      },
+      data4:{
         xData:[],
-        yData:[{data:[]},{data:[]},{data:[]},{data:[]}]
-      };
-      const paramList1 = [
+        xStoreData:[],
+        yData:[{data:[],storeData:[]},{data:[],storeData:[]},{data:[],storeData:[]}]
+      },
+      data5:{
+        xData:[],
+        xStoreData:[],
+        yData:[{data:[],storeData:[]}]
+      },
+      data6:{
+        xData:[],
+        xStoreData:[],
+        yData:[{data:[],storeData:[]}]
+      },
+      paramList1:[
         'Op201CompCoolFwdPressAct',
         'Op201CompHeatFwdPressAct',
         'Op201CompJunctFwdPressAct',
@@ -117,11 +202,11 @@ export default {
         'Op201TankMatchFwdPressAct',
         'Op201TankHeatBwdPressAct',
         'Op201TankMatchBwdPressAct',
-        ];
-      const paramNumList1 = ['76','70','74','66','61','59','60','58','72','68','64','63',];
-      const paramList2 = ['Op201CompTempActCP','Op201TankTempActCP','P201M PID','P201M-curent',];
-      const paramNumList2 = ['45','47','292','297',];
-      const paramList3 = [
+        ],
+      paramNumList1:['76','70','74','66','61','59','60','58','72','68','64','63',],
+      paramList2:['Op201CompTempActCP','Op201TankTempActCP','P201M-curent',],
+      paramNumList2:['45','47','297',],
+      paramList3:[
         'Op203CompCoolFwdPressAct',
         'Op203CompHeatFwdPressAct',
         'Op203CompJunctFwdPressAct',
@@ -134,14 +219,32 @@ export default {
         'Op203TankMatchFwdPressAct',
         'Op203TankHeatBwdPressAct',
         'Op203TankMatchBwdPressAct',
-        ];
-      const paramNumList3 = ['231','225','229','221','216','214','215','213','227','223','219','218',];
-      const paramList4 = ['Op203CompTempActCP','Op203TankTempActCP','P203M PID','P203M-Curent',];
-      const paramNumList4 = ['253','255','294','298',];
-
+        ],
+      paramNumList3:['231','225','229','221','216','214','215','213','227','223','219','218',],
+      paramList4:['Op203CompTempActCP','Op203TankTempActCP','P203M-Curent',],
+      paramNumList4:['253','255','298',],
+      paramList5:['P201M PID'],
+      paramNumList5:['292'],
+      paramList6:['P203M PID'],
+      paramNumList6:['294'],
+    }
+  },
+  mounted(){
+    this.initSocket();
+    // this.init();
+    setInterval(()=>{
+      this.dateTime = this.getDateTime();
+    },1000);
+  },
+  components:{
+    Charts
+  },
+  methods:{
+    init(){
       let ws = new WebSocket("ws://localhost:8181");
       let timeout = null;
       let count = 1;
+      this.socketData = null;
       ws.onopen = function() {
         console.log("client：打开连接");
       };
@@ -151,73 +254,27 @@ export default {
           const data = JSON.parse(e.data);
           // console.log(count)
           if(data.fcstation2){
-            if(count === 1){
-              const list = data.fcstation2;
-              this.handleSocketData(list,1,paramList1,paramNumList1);
-              this.handleSocketData(list,2,paramList2,paramNumList2);
-              this.handleSocketData(list,3,paramList3,paramNumList3);
-              this.handleSocketData(list,4,paramList4,paramNumList4);
-            }
+            this.socketData = data.fcstation2;
           }
         }
       };
       timeout = setInterval(()=>{
-        count >= 5 ? count = 1 : count++;
+        // count >= 5 ? count = 1 : count++;
+        count++;
+        if(count%2===0){
+          this.handleSocketData(this.socketData,1,this.paramList1,this.paramNumList1);
+          this.handleSocketData(this.socketData,2,this.paramList2,this.paramNumList2);
+          this.handleSocketData(this.socketData,3,this.paramList3,this.paramNumList3);
+          this.handleSocketData(this.socketData,4,this.paramList4,this.paramNumList4);
+          this.handleSocketData(this.socketData,5,this.paramList5,this.paramNumList5);
+          this.handleSocketData(this.socketData,6,this.paramList6,this.paramNumList6);
+        };
       },1000);
     },
     initSocket() {
-      this.data1 = {
-        xData:[],
-        yData:[{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]}]
-      };
-      this.data2 = {
-        xData:[],
-        yData:[{data:[]},{data:[]},{data:[]},{data:[]}]
-      };
-      this.data3 = {
-        xData:[],
-        yData:[{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]},{data:[]}]
-      };
-      this.data4 = {
-        xData:[],
-        yData:[{data:[]},{data:[]},{data:[]},{data:[]}]
-      };
-      const paramList1 = [
-        'Op201CompCoolFwdPressAct',
-        'Op201CompHeatFwdPressAct',
-        'Op201CompJunctFwdPressAct',
-        'Op201CompMatchFwdPressAct',
-        'Op201CompCoolBwdPressAct',
-        'Op201CompHeatBwdPressAct',
-        'Op201CompJunctBwdPressAct',
-        'Op201CompMatchBwdPressAct',
-        'Op201TankHeatFwdPressAct',
-        'Op201TankMatchFwdPressAct',
-        'Op201TankHeatBwdPressAct',
-        'Op201TankMatchBwdPressAct',
-        ];
-      const paramNumList1 = ['76','70','74','66','61','59','60','58','72','68','64','63',];
-      const paramList2 = ['Op201CompTempActCP','Op201TankTempActCP','P201M PID','P201M-curent',];
-      const paramNumList2 = ['45','47','292','297',];
-      const paramList3 = [
-        'Op203CompCoolFwdPressAct',
-        'Op203CompHeatFwdPressAct',
-        'Op203CompJunctFwdPressAct',
-        'Op203CompMatchFwdPressAct',
-        'Op203CompCoolBwdPressAct',
-        'Op203CompHeatBwdPressAct',
-        'Op203CompJunctBwdPressAct',
-        'Op203CompMatchBwdPressAct',
-        'Op203TankHeatFwdPressAct',
-        'Op203TankMatchFwdPressAct',
-        'Op203TankHeatBwdPressAct',
-        'Op203TankMatchBwdPressAct',
-        ];
-      const paramNumList3 = ['231','225','229','221','216','214','215','213','227','223','219','218',];
-      const paramList4 = ['Op203CompTempActCP','Op203TankTempActCP','P203M PID','P203M-Curent',];
-      const paramNumList4 = ['253','255','294','298',];
       let timeout = null;
       let count = 1;
+      this.socketData = null;
       const socket = socketioclient.connect(`http://192.168.8.108:10192/${namespace}`);
       socket.on('connect', () => {
         console.log('connected to socket!!!');
@@ -225,58 +282,112 @@ export default {
       socket.on(eventName, (resp) => {
         console.log(resp)
         if(resp){
-          // const data = JSON.parse(resp);
           const data = resp;
           if(data.fcstation2){
-            if(count === 1){
-              const list = data.fcstation2;
-              this.handleSocketData(list,1,paramList1,paramNumList1);
-              this.handleSocketData(list,2,paramList2,paramNumList2);
-              this.handleSocketData(list,3,paramList3,paramNumList3);
-              this.handleSocketData(list,4,paramList4,paramNumList4);
-            }
+            this.socketData = data.fcstation2;
           }
         }
       });
       timeout = setInterval(()=>{
-        count >= 5 ? count = 1 : count++;
+        count++;
+        if(count%2===0){
+          this.handleSocketData(this.socketData,1,this.paramList1,this.paramNumList1);
+          this.handleSocketData(this.socketData,2,this.paramList2,this.paramNumList2);
+          this.handleSocketData(this.socketData,3,this.paramList3,this.paramNumList3);
+          this.handleSocketData(this.socketData,4,this.paramList4,this.paramNumList4);
+          this.handleSocketData(this.socketData,5,this.paramList5,this.paramNumList5);
+          this.handleSocketData(this.socketData,6,this.paramList6,this.paramNumList6);
+        };
       },1000);
     },
-    handleSocketData(list,type,paramList,paramNumList){
-      this['data'+type].xData.push(this.getDateTime(list.timestamp).substr(11,this.getDateTime(list.timestamp).length));
+    handleSocketData(list,type,paramList,paramNumList,isHandle){
+      // this['data'+type].xData.push(this.getDateTime(list.timestamp).substr(11,this.getDateTime(list.timestamp).length));
+      // this['data'+type].xStoreData.push(this.getDateTime(list.timestamp).substr(11,this.getDateTime(list.timestamp).length));
+      const count = this.duringTime/2;
+      const duringTime = this.duringTime || 10;
+      this['data'+type].xData = [];
+      // this['data'+type].xStoreData = [];
+      for(let i=2;i<=duringTime;i=i+2){
+        this['data'+type].xData.push(i);
+        // this['data'+type].xStoreData.push(i);
+      }
+      // this['data'+type].xData.reverse();
       this['data'+type].yData.forEach((val,key)=>{
         val["type"] = "line";
+        val["smooth"] = true;
         if(type === 1 || type === 3){
-          type === 1 ? val["itemStyle"] = {color:"rgb(91,159,167)"} : val["itemStyle"] = {color:"rgb(194,123,99)"};
-        }else{
-          if(key === 1){
+          // type === 1 ? val["itemStyle"] = {color:"rgb(91,159,167)"} : val["itemStyle"] = {color:"rgb(194,123,99)"};
+          if(key >= 0 && key <= 3){
             val["itemStyle"] = {color:"blue"};
-          }else if(key === 2){
+          }else if(key > 3 && key <=7){
             val["itemStyle"] = {color:"yellow"};
-          }else if(key === 3){
+          }else if(key > 7 && key <= 9){
+            val["itemStyle"] = {color:"green"};
+          }else{
+            val["itemStyle"] = {color:"rgb(91,159,167)"};
+          }
+        }else{
+          if(key === 0){
+            val["itemStyle"] = {color:"blue"};
+          }else if(key === 1){
+            val["itemStyle"] = {color:"yellow"};
+          }else if(key === 2){
             val["itemStyle"] = {color:"green"};
             val["yAxisIndex"] = 1;
-          }else if(key === 4){
+          }else if(key === 3){
             val["yAxisIndex"] = 1;
           }
-        }
-        val.data.push(list[paramNumList[key]]);;
+        };
+        val["itemStyle"]['opacity'] = 0;
+        val.data.unshift(parseInt(list[paramNumList[key]]).toFixed(2));
+        val.storeData.unshift(parseInt(list[paramNumList[key]]).toFixed(2));
         val.name = paramList[key];
-        if(val.data.length > 10){
-          val.data.shift();
+        if(isHandle){
+          if(count < val.data.length){
+            // val.data = val.data.slice(val.data.length - count,val.data.length);
+            val.data = val.data.slice(0,count);
+          }else{
+            // let index = val.storeData.length-count > 0 ? val.storeData.length-count :0;
+            // val.data = val.storeData.slice(index,val.storeData.length);
+            val.data = val.storeData.slice(0,count);
+          }
+        }
+        if(val.data.length > (count||5)){
+          val.data.pop();
+        };
+        if(val.storeData.length > 120){
+          val.storeData.pop();
         }
       });
-      if(this['data'+type].xData.length > 10){
-        this['data'+type].xData.shift();
+      if(isHandle){
+        if(count < this['data'+type].xData.length){
+          this['data'+type].xData = this['data'+type].xData.slice(this['data'+type].xData.length - count,this['data'+type].xData.length);
+        }else{
+          let index = this['data'+type].xStoreData.length-count > 0 ? this['data'+type].xStoreData.length-count : 0;
+          this['data'+type].xData = this['data'+type].xStoreData.slice(index,this['data'+type].xStoreData.length);
+        }
       }
-      this.setOption(this['data'+type].xData,this['data'+type].yData,type);
+
+      // if(this['data'+type].xData.length > (count||10)){
+      //   this['data'+type].xData.shift();
+      // }
+      // if(this['data'+type].xStoreData.length > 120){
+      //   this['data'+type].xStoreData.shift();
+      // }
+      this.setOption(this['data'+type].xData,this['data'+type].yData,type,this['data'+type].xStoreData);
     },
-    setOption(xData,yData,type){
+    setOption(xData,yData,type,xStoreData){
       this['chartsData'+type].xAxis = [
           {
               type: 'category',
               boundaryGap: true,
               data:xData,
+              storeData:xStoreData,
+              axisLabel:{
+                interval:xData.length > 50 ? "auto" : 0,
+                rotate:xData.length > 50 ? 80 : 0,
+                fontSize:xData.length > 50 ? 10 : 12,
+              },
               axisLine:{
                 lineStyle:{
                   color:'#fff'
@@ -287,8 +398,15 @@ export default {
       this['chartsData'+type].dataList = yData;
       this['chartsData'+type].type = type;
     },
+    handleDuringTime(time){
+      console.log(this.duringTime)
+      this.handleSocketData(this.socketData,1,this.paramList1,this.paramNumList1,1);
+      this.handleSocketData(this.socketData,2,this.paramList2,this.paramNumList1,1);
+      this.handleSocketData(this.socketData,3,this.paramList3,this.paramNumList1,1);
+      this.handleSocketData(this.socketData,4,this.paramList4,this.paramNumList1,1);
+    },
     getDateTime(dateNum){
-      let dateObj = new Date(dateNum);
+      let dateObj = new Date(dateNum||new Date().getTime());
       return this.addZero(dateObj.getFullYear())+"-"+this.addZero((dateObj.getMonth()+1))+"-"+this.addZero(dateObj.getDate())+" "+this.addZero(dateObj.getHours())+":"+this.addZero(dateObj.getMinutes())+":"+this.addZero(dateObj.getSeconds());
     },
     addZero(num){
@@ -318,9 +436,30 @@ export default {
     font-weight: 500;
     color: rgba(0, 0, 0,.7);
     display: flex;
-    justify-content: space-around;
-    span{
-      width: 40%;
+    justify-content: space-between;
+    padding: 0 10px;
+    box-sizing: border-box;
+    h2{
+      font-weight: 500;
+      font-size: 30px;
+    }
+    >span{
+      // width: 40%;
+      .el-select{
+        vertical-align: middle;
+        margin-right: 5px;
+        width: 120px;
+      }
+      span{
+        vertical-align: middle;
+      }
+      
+    }
+    input::-webkit-input-placeholder{
+      color: rgba(0, 0, 0, 0.7);
+    }
+    .time-going{
+      font-size: 17px;
     }
     img{
       // width: 20%;
@@ -336,15 +475,18 @@ export default {
   .item-container{
     height: 100%;
     >div{
-      height: 49%;
+      height: 40%;
       background: #283B52;
       overflow: hidden;
       >div{
-        margin-top: 5%;
+        // margin-top: 5%;
       }
     }
-    >div:nth-child(2){
-      margin-top: 2%;
+    >div:nth-child(3){
+      height: 15%;
+    }
+    >div:nth-child(2),div:nth-child(3){
+      margin-top: 1%;
     }
   }
 </style>

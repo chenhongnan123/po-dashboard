@@ -303,11 +303,11 @@ export default {
     handleSocketData(list,type,paramList,paramNumList,isHandle){
       // this['data'+type].xData.push(this.getDateTime(list.timestamp).substr(11,this.getDateTime(list.timestamp).length));
       // this['data'+type].xStoreData.push(this.getDateTime(list.timestamp).substr(11,this.getDateTime(list.timestamp).length));
-      const count = this.duringTime/2;
       const duringTime = this.duringTime || 10;
+      const count = duringTime/2 + 1;
       this['data'+type].xData = [];
       // this['data'+type].xStoreData = [];
-      for(let i=2;i<=duringTime;i=i+2){
+      for(let i=0;i<=duringTime;i=i+2){
         this['data'+type].xData.push(i);
         // this['data'+type].xStoreData.push(i);
       }
@@ -352,10 +352,10 @@ export default {
             val.data = val.storeData.slice(0,count);
           }
         }
-        if(val.data.length > (count||5)){
+        if(val.data.length > count){
           val.data.pop();
         };
-        if(val.storeData.length > 120){
+        if(val.storeData.length > 121){
           val.storeData.pop();
         }
       });
@@ -380,7 +380,7 @@ export default {
       this['chartsData'+type].xAxis = [
           {
               type: 'category',
-              boundaryGap: true,
+              boundaryGap: false,
               data:xData,
               storeData:xStoreData,
               axisLabel:{

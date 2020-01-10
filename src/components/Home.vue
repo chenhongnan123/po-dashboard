@@ -123,7 +123,7 @@ export default {
         title:"",
         lMax:100,
         lMin:0,
-        gridTop:10
+        gridTop:5
       },
       chartsData6:{
         dataList:[],
@@ -132,7 +132,7 @@ export default {
         title:"",
         lMax:100,
         lMin:0,
-        gridTop:10
+        gridTop:5
       },
       data1:{
         xData:[],
@@ -224,8 +224,8 @@ export default {
     }
   },
   mounted(){
-    // this.initSocket();
-    this.init();
+    this.initSocket();
+    // this.init();
     setInterval(()=>{
       this.dateTime = this.getDateTime();
     },1000);
@@ -290,12 +290,12 @@ export default {
       // this['data'+type].xStoreData.push(this.getDateTime(list.timestamp).substr(11,this.getDateTime(list.timestamp).length));
       const duringTime = this.duringTime || 10;
       const count = duringTime/this.intervalTime + 1;
-      this['data'+type].xData = [];
+      // this['data'+type].xData = [];
       // this['data'+type].xStoreData = [];
-      for(let i=0;i<=duringTime;i=i+this.intervalTime){
-        this['data'+type].xData.push(i);
-        // this['data'+type].xStoreData.push(i);
-      }
+      // for(let i=0;i<=duringTime;i=i+this.intervalTime){
+      //   this['data'+type].xData.push(i);
+      //   // this['data'+type].xStoreData.push(i);
+      // }
       // this['data'+type].xData.reverse();
       this['data'+type].yData.forEach((val,key)=>{
         val["type"] = "line";
@@ -336,7 +336,7 @@ export default {
         };
         
         if(isHandle){
-          if(count < val.data.length){
+          if(count <= val.data.length){
             // val.data = val.data.slice(val.data.length - count,val.data.length);
             val.data = val.data.slice(0,count);
           }else{
@@ -348,25 +348,28 @@ export default {
         if(val.data.length > count){
           val.data.pop();
         };
-        if(val.storeData.length > 121){
+        if(val.storeData.length > 481){
           val.storeData.pop();
         }
       });
+      this['data'+type].xData.unshift(this.getDateTime(list.timestamp).substr(14,list.timestamp.length));
+      this['data'+type].xStoreData.unshift(this.getDateTime(list.timestamp).substr(14,list.timestamp.length));
+      if(this['data'+type].xData.length > count){
+        this['data'+type].xData.pop();
+      }
+      if(this['data'+type].xStoreData.length > 481){
+        this['data'+type].xStoreData.pop();
+      }
       if(isHandle){
-        if(count < this['data'+type].xData.length){
-          this['data'+type].xData = this['data'+type].xData.slice(this['data'+type].xData.length - count,this['data'+type].xData.length);
+        if(count <= this['data'+type].xData.length){
+          this['data'+type].xData = this['data'+type].xData.slice(0,count);
+          // this['data'+type].xData = this['data'+type].xData.slice(this['data'+type].xData.length - count,this['data'+type].xData.length);
         }else{
-          let index = this['data'+type].xStoreData.length-count > 0 ? this['data'+type].xStoreData.length-count : 0;
-          this['data'+type].xData = this['data'+type].xStoreData.slice(index,this['data'+type].xStoreData.length);
+          // let index = this['data'+type].xStoreData.length-count > 0 ? this['data'+type].xStoreData.length-count : 0;
+          // this['data'+type].xData = this['data'+type].xStoreData.slice(index,this['data'+type].xStoreData.length);
+          this['data'+type].xData = this['data'+type].xStoreData.slice(0,count);
         }
       }
-
-      // if(this['data'+type].xData.length > (count||10)){
-      //   this['data'+type].xData.shift();
-      // }
-      // if(this['data'+type].xStoreData.length > 120){
-      //   this['data'+type].xStoreData.shift();
-      // }
       this.setOption(this['data'+type].xData,this['data'+type].yData,type,this['data'+type].xStoreData);
     },
     setOption(xData,yData,type,xStoreData){
@@ -377,8 +380,8 @@ export default {
               data:xData,
               storeData:xStoreData,
               axisLabel:{
-                interval:xData.length > 50 ? "auto" : 0,
-                rotate:xData.length > 50 ? 80 : 0,
+                // interval:xData.length > 50 ? "auto" : 0,
+                rotate:xData.length > 30 ? 40 : 0,
                 fontSize:xData.length > 50 ? 10 : 12,
               },
               axisLine:{
@@ -394,9 +397,11 @@ export default {
     handleDuringTime(time){
       console.log(this.duringTime)
       this.handleSocketData(this.socketData,1,this.paramList1,this.paramNumList1,1);
-      this.handleSocketData(this.socketData,2,this.paramList2,this.paramNumList1,1);
-      this.handleSocketData(this.socketData,3,this.paramList3,this.paramNumList1,1);
-      this.handleSocketData(this.socketData,4,this.paramList4,this.paramNumList1,1);
+      this.handleSocketData(this.socketData,2,this.paramList2,this.paramNumList2,1);
+      this.handleSocketData(this.socketData,3,this.paramList3,this.paramNumList3,1);
+      this.handleSocketData(this.socketData,4,this.paramList4,this.paramNumList4,1);
+      this.handleSocketData(this.socketData,5,this.paramList5,this.paramNumList5,1);
+      this.handleSocketData(this.socketData,6,this.paramList6,this.paramNumList6,1);
     },
     getDateTime(dateNum){
       let dateObj = new Date(dateNum||new Date().getTime());

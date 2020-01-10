@@ -34,13 +34,14 @@ export default {
   methods:{
     drawLine(data){
       // _this.$echarts.init(document.getElementById('myChart')).dispose();
-      this.myChart = this.$echarts.init(document.getElementById('myChart'+data.type))
+      if(!this.myChart)
+        this.myChart = this.$echarts.init(document.getElementById('myChart'+data.type))
       this.myChart.setOption({
           grid: {
             width:'80%',
             height:'70%',
             left:'5%',
-            top:data.gridTop||58,
+            top:data.gridTop||50,
           },
           title: {
               text: data.title,

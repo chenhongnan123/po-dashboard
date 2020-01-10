@@ -62,6 +62,7 @@ export default {
     return {
       dateTime:null,
       duringTime:null,
+      intervalTime:.5,
       duringTimeOptions:[
         {name:10,id:10},
         {name:30,id:30},
@@ -74,7 +75,7 @@ export default {
         xAxis:[],
         type:null,
         title:"",
-        isHiddenLegend:true,
+        isHiddenLegend:false,
         title:"OP201 压力 Pressure",
         ylName:"压力(Bar)",
         lMax:10,
@@ -84,11 +85,11 @@ export default {
         dataList:[],
         xAxis:[],
         type:null,
-        title:"OP201 温度 Temperature - 电流 Current-PID",
+        title:"OP201 温度 Temperature - 电流 Current",
         ylName:"温度(℃)",
         yrName:"电流(A)",
-        lMax:500,
-        lMin:0,
+        lMax:350,
+        lMin:100,
         rMax:5,
         rMin:0,
       },
@@ -97,7 +98,7 @@ export default {
         xAxis:[],
         type:null,
         title:"",
-        isHiddenLegend:true,
+        isHiddenLegend:false,
         title:"OP203 压力 Pressure",
         ylName:"压力(Bar)",
         lMax:10,
@@ -107,11 +108,11 @@ export default {
         dataList:[],
         xAxis:[],
         type:null,
-        title:"OP203 温度 Temperature - 电流 Current-PID",
+        title:"OP203 温度 Temperature - 电流 Current",
         ylName:"温度(℃)",
         yrName:"电流(A)",
-        lMax:500,
-        lMin:0,
+        lMax:350,
+        lMin:100,
         rMax:5,
         rMin:0,
       },
@@ -143,12 +144,6 @@ export default {
           {data:[],storeData:[]},
           {data:[],storeData:[]},
           {data:[],storeData:[]},
-          {data:[],storeData:[]},
-          {data:[],storeData:[]},
-          {data:[],storeData:[]},
-          {data:[],storeData:[]},
-          {data:[],storeData:[]},
-          {data:[],storeData:[]}
         ]
       },
       data2:{
@@ -166,12 +161,6 @@ export default {
           {data:[],storeData:[]},
           {data:[],storeData:[]},
           {data:[],storeData:[]},
-          {data:[],storeData:[]},
-          {data:[],storeData:[]},
-          {data:[],storeData:[]},
-          {data:[],storeData:[]},
-          {data:[],storeData:[]},
-          {data:[],storeData:[]}
         ]
       },
       data4:{
@@ -194,16 +183,17 @@ export default {
         'Op201CompHeatFwdPressAct',
         'Op201CompJunctFwdPressAct',
         'Op201CompMatchFwdPressAct',
+        'Op201TankHeatFwdPressAct',
+        'Op201TankMatchFwdPressAct',
+
         'Op201CompCoolBwdPressAct',
         'Op201CompHeatBwdPressAct',
         'Op201CompJunctBwdPressAct',
         'Op201CompMatchBwdPressAct',
-        'Op201TankHeatFwdPressAct',
-        'Op201TankMatchFwdPressAct',
         'Op201TankHeatBwdPressAct',
         'Op201TankMatchBwdPressAct',
         ],
-      paramNumList1:['76','70','74','66','61','59','60','58','72','68','64','63',],
+      paramNumList1:['76','70','74','66','72','68',  '61','59','60','58', '64','63',],
       paramList2:['Op201CompTempActCP','Op201TankTempActCP','P201M-curent',],
       paramNumList2:['45','47','297',],
       paramList3:[
@@ -211,27 +201,31 @@ export default {
         'Op203CompHeatFwdPressAct',
         'Op203CompJunctFwdPressAct',
         'Op203CompMatchFwdPressAct',
+        'Op203TankHeatFwdPressAct',
+        'Op203TankMatchFwdPressAct',
+
         'Op203CompCoolBwdPressAct',
         'Op203CompHeatBwdPressAct',
         'Op203CompJunctBwdPressAct',
         'Op203CompMatchBwdPressAct',
-        'Op203TankHeatFwdPressAct',
-        'Op203TankMatchFwdPressAct',
         'Op203TankHeatBwdPressAct',
         'Op203TankMatchBwdPressAct',
         ],
-      paramNumList3:['231','225','229','221','216','214','215','213','227','223','219','218',],
+      paramNumList3:['231','225','229','221','227','223',  '216','214','215','213','219','218',],
       paramList4:['Op203CompTempActCP','Op203TankTempActCP','P203M-Curent',],
       paramNumList4:['253','255','298',],
       paramList5:['P201M PID'],
       paramNumList5:['292'],
       paramList6:['P203M PID'],
       paramNumList6:['294'],
+      differenceName201:['Op201CompCool','Op201CompHeat','Op201CompJunct','Op201CompMatch','Op201TankHeat','Op201TankMatch'],
+      differenceName203:['Op203CompCool','Op203CompHeat','Op203CompJunct','Op203CompMatch','Op203TankHeat','Op203TankMatch'],
+
     }
   },
   mounted(){
-    this.initSocket();
-    // this.init();
+    // this.initSocket();
+    this.init();
     setInterval(()=>{
       this.dateTime = this.getDateTime();
     },1000);
@@ -243,7 +237,6 @@ export default {
     init(){
       let ws = new WebSocket("ws://localhost:8181");
       let timeout = null;
-      let count = 1;
       this.socketData = null;
       ws.onopen = function() {
         console.log("client：打开连接");
@@ -259,21 +252,16 @@ export default {
         }
       };
       timeout = setInterval(()=>{
-        // count >= 5 ? count = 1 : count++;
-        count++;
-        if(count%2===0){
           this.handleSocketData(this.socketData,1,this.paramList1,this.paramNumList1);
           this.handleSocketData(this.socketData,2,this.paramList2,this.paramNumList2);
           this.handleSocketData(this.socketData,3,this.paramList3,this.paramNumList3);
           this.handleSocketData(this.socketData,4,this.paramList4,this.paramNumList4);
           this.handleSocketData(this.socketData,5,this.paramList5,this.paramNumList5);
           this.handleSocketData(this.socketData,6,this.paramList6,this.paramNumList6);
-        };
-      },1000);
+      },this.intervalTime*1000);
     },
     initSocket() {
       let timeout = null;
-      let count = 1;
       this.socketData = null;
       const socket = socketioclient.connect(`http://192.168.8.108:10192/${namespace}`);
       socket.on('connect', () => {
@@ -289,25 +277,22 @@ export default {
         }
       });
       timeout = setInterval(()=>{
-        count++;
-        if(count%2===0){
           this.handleSocketData(this.socketData,1,this.paramList1,this.paramNumList1);
           this.handleSocketData(this.socketData,2,this.paramList2,this.paramNumList2);
           this.handleSocketData(this.socketData,3,this.paramList3,this.paramNumList3);
           this.handleSocketData(this.socketData,4,this.paramList4,this.paramNumList4);
           this.handleSocketData(this.socketData,5,this.paramList5,this.paramNumList5);
           this.handleSocketData(this.socketData,6,this.paramList6,this.paramNumList6);
-        };
-      },1000);
+      },this.intervalTime*1000);
     },
     handleSocketData(list,type,paramList,paramNumList,isHandle){
       // this['data'+type].xData.push(this.getDateTime(list.timestamp).substr(11,this.getDateTime(list.timestamp).length));
       // this['data'+type].xStoreData.push(this.getDateTime(list.timestamp).substr(11,this.getDateTime(list.timestamp).length));
       const duringTime = this.duringTime || 10;
-      const count = duringTime/2 + 1;
+      const count = duringTime/this.intervalTime + 1;
       this['data'+type].xData = [];
       // this['data'+type].xStoreData = [];
-      for(let i=0;i<=duringTime;i=i+2){
+      for(let i=0;i<=duringTime;i=i+this.intervalTime){
         this['data'+type].xData.push(i);
         // this['data'+type].xStoreData.push(i);
       }
@@ -315,33 +300,41 @@ export default {
       this['data'+type].yData.forEach((val,key)=>{
         val["type"] = "line";
         val["smooth"] = true;
+        val["itemStyle"] = {opacity:0};
+        if(key == 0){
+          val["itemStyle"]["color"] = "blue";
+        }else if(key === 1){
+          val["itemStyle"]["color"] = "yellow";
+        }else if(key === 2){
+          val["itemStyle"]["color"] = "green";
+        }else if(key === 3){
+          val["itemStyle"]["color"] = "white";
+        }else if(key === 4){
+          val["itemStyle"]["color"] = "red";
+        }else if(key === 5){
+          val["itemStyle"]["color"] = "orange";
+        }
+        // val["itemStyle"] = {opacity:0};
         if(type === 1 || type === 3){
-          // type === 1 ? val["itemStyle"] = {color:"rgb(91,159,167)"} : val["itemStyle"] = {color:"rgb(194,123,99)"};
-          if(key >= 0 && key <= 3){
-            val["itemStyle"] = {color:"blue"};
-          }else if(key > 3 && key <=7){
-            val["itemStyle"] = {color:"yellow"};
-          }else if(key > 7 && key <= 9){
-            val["itemStyle"] = {color:"green"};
-          }else{
-            val["itemStyle"] = {color:"rgb(91,159,167)"};
-          }
+          let difference = list[paramNumList[key]] - list[paramNumList[key+6]];
+          val.data.unshift(difference.toFixed(2));
+          val.storeData.unshift(difference.toFixed(2));
+          if(type === 1)
+            val.name = this.differenceName201[key];
+          else
+            val.name = this.differenceName203[key];
         }else{
-          if(key === 0){
-            val["itemStyle"] = {color:"blue"};
-          }else if(key === 1){
-            val["itemStyle"] = {color:"yellow"};
-          }else if(key === 2){
-            val["itemStyle"] = {color:"green"};
-            val["yAxisIndex"] = 1;
-          }else if(key === 3){
-            val["yAxisIndex"] = 1;
+          if(type === 2 || type === 4){
+            if(key === 2){
+              val["yAxisIndex"] = 1;
+            }
           }
+          val.data.unshift(parseInt(list[paramNumList[key]]).toFixed(2));
+          val.storeData.unshift(parseInt(list[paramNumList[key]]).toFixed(2));
+          val.name = paramList[key];
+          
         };
-        val["itemStyle"]['opacity'] = 0;
-        val.data.unshift(parseInt(list[paramNumList[key]]).toFixed(2));
-        val.storeData.unshift(parseInt(list[paramNumList[key]]).toFixed(2));
-        val.name = paramList[key];
+        
         if(isHandle){
           if(count < val.data.length){
             // val.data = val.data.slice(val.data.length - count,val.data.length);

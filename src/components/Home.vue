@@ -123,7 +123,9 @@ export default {
         title:"",
         lMax:100,
         lMin:0,
-        gridTop:5
+        gridTop:5,
+        itemGap:1,
+
       },
       chartsData6:{
         dataList:[],
@@ -132,7 +134,8 @@ export default {
         title:"",
         lMax:100,
         lMin:0,
-        gridTop:5
+        gridTop:5,
+        itemGap:1,
       },
       data1:{
         xData:[],
@@ -171,12 +174,28 @@ export default {
       data5:{
         xData:[],
         xStoreData:[],
-        yData:[{data:[],storeData:[]}]
+        yData:[
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+        ]
       },
       data6:{
         xData:[],
         xStoreData:[],
-        yData:[{data:[],storeData:[]}]
+        yData:[
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+          {data:[],storeData:[]},
+        ]
       },
       paramList1:[
         'Op201CompCoolFwdPressAct',
@@ -214,18 +233,18 @@ export default {
       paramNumList3:['231','225','229','221','227','223',  '216','214','215','213','219','218',],
       paramList4:['Op203CompTempActCP','Op203TankTempActCP','P203M-Curent',],
       paramNumList4:['253','255','298',],
-      paramList5:['P201M PID'],
-      paramNumList5:['292'],
-      paramList6:['P203M PID'],
-      paramNumList6:['294'],
+      paramList5:['P201M PID','Gripper Match','Gripper Heat','Gripper Junction','Gripper Cool','Hotplate Match','Hotplate Heat',],
+      paramNumList5:['292','91','95','99','103','107','111'],
+      paramList6:['P203M PID','Gripper Match','Gripper Heat','Gripper Junction','Gripper Cool','Hotplate Match','Hotplate Heat',],
+      paramNumList6:['294','257','261','265','269','273','277'],
       differenceName201:['Op201CompCool','Op201CompHeat','Op201CompJunct','Op201CompMatch','Op201TankHeat','Op201TankMatch'],
       differenceName203:['Op203CompCool','Op203CompHeat','Op203CompJunct','Op203CompMatch','Op203TankHeat','Op203TankMatch'],
 
     }
   },
   mounted(){
-    this.initSocket();
-    // this.init();
+    // this.initSocket();
+    this.init();
     setInterval(()=>{
       this.dateTime = this.getDateTime();
     },1000);
@@ -324,13 +343,40 @@ export default {
           else
             val.name = this.differenceName203[key];
         }else{
+          let yValue = list[paramNumList[key]];
           if(type === 2 || type === 4){
             if(key === 2){
               val["yAxisIndex"] = 1;
             }
           }
-          val.data.unshift(parseInt(list[paramNumList[key]]).toFixed(2));
-          val.storeData.unshift(parseInt(list[paramNumList[key]]).toFixed(2));
+          if(type === 5 || type === 6){
+            if(key > 0){
+              val["type"] = "bar";
+              val["itemStyle"] = {opacity:1};
+              if(key === 1){
+                yValue*=20;
+                val["itemStyle"]["color"] = "blue";
+              }else if(key === 2){
+                yValue*=40;
+                val["itemStyle"]["color"] = "yellow";
+              }else if(key === 3){
+                yValue*=60;
+                val["itemStyle"]["color"] = "green";
+              }else if(key === 4){
+                yValue*=80;
+                val["itemStyle"]["color"] = "white";
+              }else if(key === 5){
+                yValue*=30;
+                val["itemStyle"]["color"] = "red";
+              }else if(key === 6){
+                yValue*=60;
+                val["itemStyle"]["color"] = "orange";
+              }
+            }
+            
+          }
+          val.data.unshift(parseInt(yValue).toFixed(2));
+          val.storeData.unshift(parseInt(yValue).toFixed(2));
           val.name = paramList[key];
           
         };
@@ -376,7 +422,7 @@ export default {
       this['chartsData'+type].xAxis = [
           {
               type: 'category',
-              boundaryGap: false,
+              boundaryGap: true,
               data:xData,
               storeData:xStoreData,
               axisLabel:{

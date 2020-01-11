@@ -38,7 +38,7 @@ export default {
         this.myChart = this.$echarts.init(document.getElementById('myChart'+data.type))
       this.myChart.setOption({
           grid: {
-            width:'80%',
+            width:'75%',
             height:'70%',
             left:'5%',
             top:data.gridTop||50,
@@ -67,10 +67,12 @@ export default {
                 color:'#fff'
               },
               top:"center",
-              left:'86%',
+              left:'82%',
               show:!data.isHiddenLegend,
               orient:'vertical',
               align:'left',
+              itemGap:data.itemGap||10,
+              itemHeight:10
           },
           dataZoom: {
               show: false,

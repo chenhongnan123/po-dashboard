@@ -39,8 +39,8 @@ export default {
       this.myChart.setOption({
           grid: {
             width:'75%',
-            height:'70%',
-            left:'5%',
+            height:data.gridHeight||'70%',
+            left:data.gridLeft||'5%',
             top:data.gridTop||50,
           },
           title: {

@@ -44,6 +44,16 @@
           </div>
         </div>
       </el-carousel-item>
+      <el-carousel-item>
+        <div class="item-container third-container">
+          <div>
+              <Charts :chartsData='chartsData7'/>
+          </div>
+          <div>
+              <Charts :chartsData='chartsData8'/>
+          </div>
+        </div>
+      </el-carousel-item>
     </el-carousel>
   </div>
 </template>
@@ -88,8 +98,8 @@ export default {
         title:"OP201 温度 Temperature - 电流 Current",
         ylName:"温度(℃)",
         yrName:"电流(A)",
-        lMax:350,
-        lMin:100,
+        lMax:280,
+        lMin:240,
         rMax:5,
         rMin:0,
       },
@@ -111,8 +121,8 @@ export default {
         title:"OP203 温度 Temperature - 电流 Current",
         ylName:"温度(℃)",
         yrName:"电流(A)",
-        lMax:350,
-        lMin:100,
+        lMax:280,
+        lMin:240,
         rMax:5,
         rMin:0,
       },
@@ -137,14 +147,36 @@ export default {
         gridTop:5,
         itemGap:1,
       },
+      chartsData7:{
+        dataList:[],
+        xAxis:[],
+        type:null,
+        title:"",
+        isHiddenLegend:false,
+        title:"OP201 Open Time",
+        // ylName:"压力(Bar)",
+        lMax:10,
+        lMin:0,
+        gridHeight:'65%',
+        gridLeft:'7%',
+      },
+      chartsData8:{
+        dataList:[],
+        xAxis:[],
+        type:null,
+        title:"",
+        isHiddenLegend:false,
+        title:"OP203 Open Time",
+        // ylName:"压力(Bar)",
+        lMax:10,
+        lMin:0,
+        gridHeight:'65%',
+        gridLeft:'7%',
+      },
       data1:{
         xData:[],
         xStoreData:[],
         yData:[
-          {data:[],storeData:[]},
-          {data:[],storeData:[]},
-          {data:[],storeData:[]},
-          {data:[],storeData:[]},
           {data:[],storeData:[]},
           {data:[],storeData:[]},
         ]
@@ -158,10 +190,6 @@ export default {
         xData:[],
         xStoreData:[],
         yData:[
-          {data:[],storeData:[]},
-          {data:[],storeData:[]},
-          {data:[],storeData:[]},
-          {data:[],storeData:[]},
           {data:[],storeData:[]},
           {data:[],storeData:[]},
         ]
@@ -197,49 +225,50 @@ export default {
           {data:[],storeData:[]},
         ]
       },
+      data7:{
+        xData:[],
+        xStoreData:[],
+        yData:[
+          {data:[],storeData:[]},
+        ]
+      },
+      data8:{
+        xData:[],
+        xStoreData:[],
+        yData:[
+          {data:[],storeData:[]},
+        ]
+      },
       paramList1:[
-        'Op201CompCoolFwdPressAct',
-        'Op201CompHeatFwdPressAct',
-        'Op201CompJunctFwdPressAct',
-        'Op201CompMatchFwdPressAct',
-        'Op201TankHeatFwdPressAct',
-        'Op201TankMatchFwdPressAct',
+        'OP201 Gripper forward pressure',
+        'OP201 Mobile Hotplate forward pressure',
 
-        'Op201CompCoolBwdPressAct',
-        'Op201CompHeatBwdPressAct',
-        'Op201CompJunctBwdPressAct',
-        'Op201CompMatchBwdPressAct',
-        'Op201TankHeatBwdPressAct',
-        'Op201TankMatchBwdPressAct',
-        ],
-      paramNumList1:['76','70','74','66','72','68',  '61','59','60','58', '64','63',],
+        'OP201 Gripper Backward pressure',
+        'OP201 Mobile Hotplate Backward pressure',
+      ],
+      paramNumList1:['528','530','529',531],
       paramList2:['Op201CompTempActCP','Op201TankTempActCP','P201M-curent',],
       paramNumList2:['45','47','297',],
       paramList3:[
-        'Op203CompCoolFwdPressAct',
-        'Op203CompHeatFwdPressAct',
-        'Op203CompJunctFwdPressAct',
-        'Op203CompMatchFwdPressAct',
-        'Op203TankHeatFwdPressAct',
-        'Op203TankMatchFwdPressAct',
+        'OP203 Gripper forward pressure',
+        'OP203 Mobile Hotplate forward pressure',
 
-        'Op203CompCoolBwdPressAct',
-        'Op203CompHeatBwdPressAct',
-        'Op203CompJunctBwdPressAct',
-        'Op203CompMatchBwdPressAct',
-        'Op203TankHeatBwdPressAct',
-        'Op203TankMatchBwdPressAct',
-        ],
-      paramNumList3:['231','225','229','221','227','223',  '216','214','215','213','219','218',],
+        'OP203 Gripper Backward pressure',
+        'OP203 Mobile Hotplate Backward pressure',
+      ],
+      paramNumList3:['536','538','537','539'],
       paramList4:['Op203CompTempActCP','Op203TankTempActCP','P203M-Curent',],
       paramNumList4:['253','255','298',],
       paramList5:['P201M PID','Gripper Match','Gripper Heat','Gripper Junction','Gripper Cool','Hotplate Match','Hotplate Heat',],
       paramNumList5:['292','91','95','99','103','107','111'],
       paramList6:['P203M PID','Gripper Match','Gripper Heat','Gripper Junction','Gripper Cool','Hotplate Match','Hotplate Heat',],
       paramNumList6:['294','257','261','265','269','273','277'],
-      differenceName201:['Op201CompCool','Op201CompHeat','Op201CompJunct','Op201CompMatch','Op201TankHeat','Op201TankMatch'],
-      differenceName203:['Op203CompCool','Op203CompHeat','Op203CompJunct','Op203CompMatch','Op203TankHeat','Op203TankMatch'],
-
+      paramList7:['op201opentimeactcp'],
+      paramNumList7:['90'],
+      paramList8:['op203opentimeactcp'],
+      paramNumList8:['245'],
+      differenceName201:['OP201 Gripper','OP201 Mobile Hotplate'],
+      differenceName203:['OP203 Gripper','OP203 Mobile Hotplate'],
     }
   },
   mounted(){
@@ -255,22 +284,30 @@ export default {
   methods:{
     init(){
       let ws = new WebSocket("ws://localhost:8181");
-      let timeout = null;
       this.socketData = null;
+      let st2tlabel = null;
       ws.onopen = function() {
         console.log("client：打开连接");
       };
-      
       ws.onmessage = (e) => {
         if(e.data){
           const data = JSON.parse(e.data);
-          // console.log(count)
+          // console.log(data.fcstation2.st2tlabel)
           if(data.fcstation2){
             this.socketData = data.fcstation2;
+            if(data.fcstation2['30'] !== st2tlabel){
+              st2tlabel = data.fcstation2['30'];
+              this.handleSocketData(data.fcstation2,7,this.paramList7,this.paramNumList7);
+              this.handleSocketData(data.fcstation2,8,this.paramList7,this.paramNumList8);
+            }
           }
         }
       };
-      timeout = setInterval(()=>{
+      for(let i = 0;i<30;i++){
+        this.handleSocketData({'30':'N/A'},7,this.paramList7,this.paramNumList7);
+        this.handleSocketData({'30':'N/A'},8,this.paramList7,this.paramNumList8);
+      }
+      setInterval(()=>{
           this.handleSocketData(this.socketData,1,this.paramList1,this.paramNumList1);
           this.handleSocketData(this.socketData,2,this.paramList2,this.paramNumList2);
           this.handleSocketData(this.socketData,3,this.paramList3,this.paramNumList3);
@@ -282,16 +319,27 @@ export default {
     initSocket() {
       let timeout = null;
       this.socketData = null;
-      const socket = socketioclient.connect(`http://192.168.8.108:10192/${namespace}`);
+      let st2tlabel = null;
+      const socket = socketioclient.connect(`http://192.168.2.10:10192/${namespace}`);
+      // const socket = socketioclient.connect(`http://192.168.8.108:10192/${namespace}`);
       socket.on('connect', () => {
         console.log('connected to socket!!!');
       });
+      for(let i = 0;i<30;i++){
+        this.handleSocketData({'30':'N/A'},7,this.paramList7,this.paramNumList7);
+        this.handleSocketData({'30':'N/A'},8,this.paramList7,this.paramNumList8);
+      }
       socket.on(eventName, (resp) => {
         console.log(resp)
         if(resp){
           const data = resp;
           if(data.fcstation2){
             this.socketData = data.fcstation2;
+            if(data.fcstation2['30'] !== st2tlabel){
+              st2tlabel = data.fcstation2['30'];
+              this.handleSocketData(data.fcstation2,7,this.paramList7,this.paramNumList7);
+              this.handleSocketData(data.fcstation2,8,this.paramList7,this.paramNumList8);
+            }
           }
         }
       });
@@ -335,7 +383,7 @@ export default {
         }
         // val["itemStyle"] = {opacity:0};
         if(type === 1 || type === 3){
-          let difference = list[paramNumList[key]] - list[paramNumList[key+6]];
+          let difference = list[paramNumList[key]] - list[paramNumList[key+2]];
           val.data.unshift(difference.toFixed(2));
           val.storeData.unshift(difference.toFixed(2));
           if(type === 1)
@@ -375,45 +423,80 @@ export default {
             }
             
           }
+          if(type === 7 || type === 8){
+            val["type"] = "bar";
+            val["itemStyle"] = {opacity:1};
+            val['markLine'] = {
+              data: [{
+                  yAxis: 5
+              }],
+              lineStyle:{
+                color:'yellow'
+              },
+              label:{
+                formatter:'最大值5'
+              }
+            };
+            if(type === 7){
+              val["itemStyle"]["color"] = "blue";
+            }
+            if(!list['30'] || list['30'] === 'N/A'){
+              yValue = 0;
+              list['30'] = 'N/A'
+            }
+          }
           val.data.unshift(parseInt(yValue).toFixed(2));
           val.storeData.unshift(parseInt(yValue).toFixed(2));
           val.name = paramList[key];
           
         };
-        
-        if(isHandle){
-          if(count <= val.data.length){
-            // val.data = val.data.slice(val.data.length - count,val.data.length);
-            val.data = val.data.slice(0,count);
-          }else{
-            // let index = val.storeData.length-count > 0 ? val.storeData.length-count :0;
-            // val.data = val.storeData.slice(index,val.storeData.length);
-            val.data = val.storeData.slice(0,count);
+        if(type === 7 || type === 8){
+          if(val.data.length > 30){
+            val.data.pop();
+          };
+        }else{
+          if(val.data.length > count){
+            val.data.pop();
+          };
+          if(val.storeData.length > 481){
+            val.storeData.pop();
+          };
+          if(isHandle){
+            if(count <= val.data.length){
+              // val.data = val.data.slice(val.data.length - count,val.data.length);
+              val.data = val.data.slice(0,count);
+            }else{
+              // let index = val.storeData.length-count > 0 ? val.storeData.length-count :0;
+              // val.data = val.storeData.slice(index,val.storeData.length);
+              val.data = val.storeData.slice(0,count);
+            }
           }
         }
-        if(val.data.length > count){
-          val.data.pop();
-        };
-        if(val.storeData.length > 481){
-          val.storeData.pop();
-        }
       });
-      this['data'+type].xData.unshift(this.getDateTime(list.timestamp).substr(14,list.timestamp.length));
-      this['data'+type].xStoreData.unshift(this.getDateTime(list.timestamp).substr(14,list.timestamp.length));
-      if(this['data'+type].xData.length > count){
-        this['data'+type].xData.pop();
-      }
-      if(this['data'+type].xStoreData.length > 481){
-        this['data'+type].xStoreData.pop();
-      }
-      if(isHandle){
-        if(count <= this['data'+type].xData.length){
-          this['data'+type].xData = this['data'+type].xData.slice(0,count);
-          // this['data'+type].xData = this['data'+type].xData.slice(this['data'+type].xData.length - count,this['data'+type].xData.length);
-        }else{
-          // let index = this['data'+type].xStoreData.length-count > 0 ? this['data'+type].xStoreData.length-count : 0;
-          // this['data'+type].xData = this['data'+type].xStoreData.slice(index,this['data'+type].xStoreData.length);
-          this['data'+type].xData = this['data'+type].xStoreData.slice(0,count);
+      if(type === 7 || type === 8){
+        console.log(list['30'])
+        this['data'+type].xData.unshift(list['30']);
+        if(this['data'+type].xData.length > 30){
+          this['data'+type].xData.pop();
+        };
+      }else{
+        this['data'+type].xData.unshift(this.getDateTime(list.timestamp).substr(14,list.timestamp.length));
+        this['data'+type].xStoreData.unshift(this.getDateTime(list.timestamp).substr(14,list.timestamp.length));
+        if(this['data'+type].xData.length > count){
+          this['data'+type].xData.pop();
+        }
+        if(this['data'+type].xStoreData.length > 481){
+          this['data'+type].xStoreData.pop();
+        }
+        if(isHandle){
+          if(count <= this['data'+type].xData.length){
+            this['data'+type].xData = this['data'+type].xData.slice(0,count);
+            // this['data'+type].xData = this['data'+type].xData.slice(this['data'+type].xData.length - count,this['data'+type].xData.length);
+          }else{
+            // let index = this['data'+type].xStoreData.length-count > 0 ? this['data'+type].xStoreData.length-count : 0;
+            // this['data'+type].xData = this['data'+type].xStoreData.slice(index,this['data'+type].xStoreData.length);
+            this['data'+type].xData = this['data'+type].xStoreData.slice(0,count);
+          }
         }
       }
       this.setOption(this['data'+type].xData,this['data'+type].yData,type,this['data'+type].xStoreData);
@@ -427,7 +510,7 @@ export default {
               storeData:xStoreData,
               axisLabel:{
                 // interval:xData.length > 50 ? "auto" : 0,
-                rotate:xData.length > 30 ? 40 : 0,
+                rotate:xData.length > 30 || type === 7 || type === 8 ? 40 : 0,
                 fontSize:xData.length > 50 ? 10 : 12,
               },
               axisLine:{
@@ -435,6 +518,7 @@ export default {
                   color:'#fff'
                 }
               },
+              
           }
       ];
       this['chartsData'+type].dataList = yData;
@@ -531,6 +615,11 @@ export default {
     }
     >div:nth-child(2),div:nth-child(3){
       margin-top: 1%;
+    }
+  }
+  .third-container{
+    >div{
+      height: 49%;
     }
   }
 </style>

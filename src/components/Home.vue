@@ -291,6 +291,7 @@ export default {
     }
   },
   mounted(){
+    this.initChartsData();
     // this.initSocket();
     this.init();
     setInterval(()=>{
@@ -301,6 +302,63 @@ export default {
     Charts
   },
   methods:{
+    initChartsData(){
+      const colorList = ["blue","yellow","green","white","red","blue","orange"];
+      for(let i = 1;i <= 8;i++){
+        if(i<=4){
+          for(let k = 0;k < this['data'+i].yData.length;k++){
+            this['data'+i].yData[k]['type'] = 'line';
+            this['data'+i].yData[k]['smooth'] = 'true';
+            this['data'+i].yData[k]['itemStyle'] = {
+              opacity:0,
+              color:colorList[k],
+            };
+            if(i === 2 || i === 4){
+              if(k === 2){
+                this['data'+i].yData[k]['yAxisIndex'] = 1;
+              }
+            }
+          }
+        }else if(i === 5 || i === 6){
+          for(let k = 0;k < this['data'+i].yData.length;k++){
+            if(k === 0){
+              this['data'+i].yData[k]['type'] = 'line';
+              this['data'+i].yData[k]['smooth'] = 'true';
+              this['data'+i].yData[k]['itemStyle'] = {
+                opacity:0,
+                color:colorList[k],
+              };
+            }else{
+              this['data'+i].yData[k]['type'] = 'bar';
+              this['data'+i].yData[k]['itemStyle'] = {
+                opacity:1,
+                color:colorList[k],
+              };
+            }
+          }
+        }else{
+          for(let k = 0;k < this['data'+i].yData.length;k++){
+            this['data'+i].yData[k]['type'] = 'bar';
+            this['data'+i].yData[k]['itemStyle'] = {
+              opacity:1,
+              color:colorList[k],
+            };
+            this['data'+i].yData[k]['markLine'] = {
+              data: [{
+                  yAxis: 5
+              }],
+              lineStyle:{
+                color:'yellow'
+              },
+              label:{
+                formatter:'最大值5'
+              }
+            };
+          }
+        }
+          
+      }
+    },
     init(){
       let ws = new WebSocket("ws://localhost:8181");
       this.socketData = null;
@@ -372,36 +430,12 @@ export default {
       },this.intervalTime*1000);
     },
     handleSocketData(list,type,paramList,paramNumList,isHandle){
-      // this['data'+type].xData.push(this.getDateTime(list.timestamp).substr(11,this.getDateTime(list.timestamp).length));
-      // this['data'+type].xStoreData.push(this.getDateTime(list.timestamp).substr(11,this.getDateTime(list.timestamp).length));
       const duringTime = this.duringTime || 10;
       const count = duringTime/this.intervalTime + 1;
-      // this['data'+type].xData = [];
-      // this['data'+type].xStoreData = [];
-      // for(let i=0;i<=duringTime;i=i+this.intervalTime){
-      //   this['data'+type].xData.push(i);
-      //   // this['data'+type].xStoreData.push(i);
-      // }
-      // this['data'+type].xData.reverse();
       this['data'+type].yData.forEach((val,key)=>{
-        val["type"] = "line";
-        val["smooth"] = true;
-        val["itemStyle"] = {opacity:0};
-        if(key == 0){
-          val["itemStyle"]["color"] = "blue";
-        }else if(key === 1){
-          val["itemStyle"]["color"] = "yellow";
-        }else if(key === 2){
-          val["itemStyle"]["color"] = "green";
-        }else if(key === 3){
-          val["itemStyle"]["color"] = "white";
-        }else if(key === 4){
-          val["itemStyle"]["color"] = "red";
-        }else if(key === 5){
-          val["itemStyle"]["color"] = "orange";
-        }
-        // val["itemStyle"] = {opacity:0};
         if(type === 1 || type === 3){
+          // console.log(this.data2.xData)
+          // console.log(list.timestamp)
           let difference = list[paramNumList[key]] - list[paramNumList[key+2]];
           val.data.unshift(difference.toFixed(2));
           val.storeData.unshift(difference.toFixed(2));
@@ -411,54 +445,25 @@ export default {
             val.name = this.differenceName203[key];
         }else{
           let yValue = list[paramNumList[key]];
-          if(type === 2 || type === 4){
-            if(key === 2){
-              val["yAxisIndex"] = 1;
-            }
-          }
           if(type === 5 || type === 6){
             if(key > 0){
-              val["type"] = "bar";
-              val["itemStyle"] = {opacity:1};
               if(key === 1){
                 yValue*=20;
-                val["itemStyle"]["color"] = "blue";
               }else if(key === 2){
                 yValue*=40;
-                val["itemStyle"]["color"] = "yellow";
               }else if(key === 3){
                 yValue*=60;
-                val["itemStyle"]["color"] = "green";
               }else if(key === 4){
                 yValue*=80;
-                val["itemStyle"]["color"] = "white";
               }else if(key === 5){
                 yValue*=30;
-                val["itemStyle"]["color"] = "red";
               }else if(key === 6){
                 yValue*=60;
-                val["itemStyle"]["color"] = "orange";
               }
             }
             
           }
           if(type === 7 || type === 8){
-            val["type"] = "bar";
-            val["itemStyle"] = {opacity:1};
-            val['markLine'] = {
-              data: [{
-                  yAxis: 5
-              }],
-              lineStyle:{
-                color:'yellow'
-              },
-              label:{
-                formatter:'最大值5'
-              }
-            };
-            if(type === 7){
-              val["itemStyle"]["color"] = "blue";
-            }
             if(!list['30'] || list['30'] === 'N/A'){
               yValue = 0;
               list['30'] = 'N/A'
@@ -482,23 +487,22 @@ export default {
           };
           if(isHandle){
             if(count <= val.data.length){
-              // val.data = val.data.slice(val.data.length - count,val.data.length);
               val.data = val.data.slice(0,count);
             }else{
-              // let index = val.storeData.length-count > 0 ? val.storeData.length-count :0;
-              // val.data = val.storeData.slice(index,val.storeData.length);
               val.data = val.storeData.slice(0,count);
             }
           }
         }
       });
       if(type === 7 || type === 8){
-        console.log(list['30'])
         this['data'+type].xData.unshift(list['30']);
         if(this['data'+type].xData.length > 30){
           this['data'+type].xData.pop();
         };
       }else{
+        if(type === 1){
+          console.log(this.getDateTime(list.timestamp).substr(14,list.timestamp.length));
+        }
         this['data'+type].xData.unshift(this.getDateTime(list.timestamp).substr(14,list.timestamp.length));
         this['data'+type].xStoreData.unshift(this.getDateTime(list.timestamp).substr(14,list.timestamp.length));
         if(this['data'+type].xData.length > count){
@@ -510,10 +514,7 @@ export default {
         if(isHandle){
           if(count <= this['data'+type].xData.length){
             this['data'+type].xData = this['data'+type].xData.slice(0,count);
-            // this['data'+type].xData = this['data'+type].xData.slice(this['data'+type].xData.length - count,this['data'+type].xData.length);
           }else{
-            // let index = this['data'+type].xStoreData.length-count > 0 ? this['data'+type].xStoreData.length-count : 0;
-            // this['data'+type].xData = this['data'+type].xStoreData.slice(index,this['data'+type].xStoreData.length);
             this['data'+type].xData = this['data'+type].xStoreData.slice(0,count);
           }
         }

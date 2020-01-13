@@ -59,7 +59,9 @@ export default {
                   label: {
                       backgroundColor: '#283b56'
                   }
-              }
+              },
+              hideDelay:2000,
+              ...data.tooltip
           },
           legend: {
               data:data.dataList.map(item=>item.name),

@@ -135,7 +135,16 @@ export default {
         lMin:0,
         gridTop:5,
         itemGap:1,
-
+        tooltip:{
+          textStyle:{
+            fontSize:10,
+            lineHeight:0,
+            rich:'auto',
+            width:'100%',
+          },
+          position:(point)=>['60%','-10%'],
+          extraCssText:'transform:scaleY(.9)'
+        }
       },
       chartsData6:{
         dataList:[],
@@ -146,6 +155,16 @@ export default {
         lMin:0,
         gridTop:5,
         itemGap:1,
+        tooltip:{
+          textStyle:{
+            fontSize:10,
+            lineHeight:0,
+            rich:'auto',
+            width:'100%',
+          },
+          position:(point)=>['60%','-10%'],
+          extraCssText:'transform:scaleY(.9)'
+        }
       },
       chartsData7:{
         dataList:[],

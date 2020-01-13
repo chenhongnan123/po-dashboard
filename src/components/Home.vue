@@ -469,8 +469,8 @@ export default {
               list['30'] = 'N/A'
             }
           }
-          val.data.unshift(parseInt(yValue).toFixed(2));
-          val.storeData.unshift(parseInt(yValue).toFixed(2));
+          val.data.unshift(Number(yValue).toFixed(2));
+          val.storeData.unshift(Number(yValue).toFixed(2));
           val.name = paramList[key];
           
         };
@@ -500,9 +500,6 @@ export default {
           this['data'+type].xData.pop();
         };
       }else{
-        if(type === 1){
-          console.log(this.getDateTime(list.timestamp).substr(14,list.timestamp.length));
-        }
         this['data'+type].xData.unshift(this.getDateTime(list.timestamp).substr(14,list.timestamp.length));
         this['data'+type].xStoreData.unshift(this.getDateTime(list.timestamp).substr(14,list.timestamp.length));
         if(this['data'+type].xData.length > count){
